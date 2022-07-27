@@ -29,3 +29,12 @@ def log(text: str):
                         level=logging.INFO, filemode='w')
     logger = logging.getLogger()
     logger.info(text)
+
+
+def clean_numbers(nb) -> int:
+    nb_text = nb
+    if nb_text.find(',') or nb_text('.') != -1:
+        clean_nb = nb_text.replace(',', '').replace('.', '')
+    else:
+        clean_nb = nb_text
+    return int(clean_nb)

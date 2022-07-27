@@ -15,10 +15,12 @@ def get_adventure_balance(url: str) -> int:
     return adventure_balance
 
 
-def get_adventure_id(url: str) -> str:
+def get_adventure_id(url: str) -> list:
+    adventures_id = []
     dorf_parser = BeautifulSoup(url, 'html.parser')
     adventure_list = dorf_parser.find(string='"adventures":[{"mapId":')
     pprint(dorf_parser)
+    return adventures_id
 
 
 def check_hero_health(url: str, health: int) -> bool:
