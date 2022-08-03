@@ -1,8 +1,11 @@
+import json
 import random
 import re
 from pprint import pprint
 
 from bs4 import BeautifulSoup
+
+from settings import buildings_path, fields_path
 
 
 def get_construction_cost(url: str) -> dict:
@@ -59,6 +62,8 @@ def scan_fields(url: str) -> list:
         field = [s.replace('gid', '') for s in field]
         field = [int(item) for item in field]
         fields.append(field)
+    with open(fields_path, 'w') as f:
+        json.dump(fields_path, f, indent=4)
     return fields
 
 
@@ -71,7 +76,7 @@ def scan_buildings(url: str) -> list:
     \n name = Building name
 
     :param url: dorf2
-    :return: [[aid#, gid#, level#]]
+    :return: [[aid#, gid#, level#, name]]
     """
 
     dorf_parser = BeautifulSoup(url, 'html.parser')
@@ -93,6 +98,8 @@ def scan_buildings(url: str) -> list:
         building.append(int(level))
         building.append(name)
         buildings.append(building)
+    with open(buildings_path, 'w') as f:
+        json.dump(buildings, f, indent=4)
     return buildings
 
 
@@ -115,7 +122,7 @@ def pick_random_crop_field(url: str) -> tuple:
     """
     Pick randomly the lowest crop field and returns the gid and buildingSlot.
 
-    :param url: dorf1
+    :param url: VILLAGE_URL
     :return: (gid#, buildingSlot#)
     """
     fields = scan_fields(url)
@@ -136,7 +143,6 @@ def get_checksum(url: str) -> str:
     """
     field_parser = BeautifulSoup(url, 'html.parser')
     upgrade_btn = field_parser.find('div', {'class': 'section1'}).find('button')['onclick']
-    print(upgrade_btn)
     checksum = re.search("checksum=(.*)'", upgrade_btn).group(1)
     return checksum
 
@@ -157,8 +163,73 @@ def current_construction(url: str) -> list:
             span_level = building.find('span', {'class': 'lvl'})
             level = int(re.findall(r' (\d+)', span_level.text)[0])
             time = building.find('span', {'class': 'timer'})['value']
-            under_construction.append(name)
-            under_construction.append(level)
-            under_construction.append(time)
+            under_construction.append((name, level, time))
+        return under_construction
     except:
         return under_construction
+
+
+def field_under_construction(url: str) -> bool:
+    """
+    Check if a field is in being built. If yes returns True, if not False.
+    :param url: dorf
+    :return: True or False
+    """
+    resource_labels = ('Clay P', 'Woodcu', 'Iron M', 'Cropland')
+    under_construction = current_construction(url)
+
+    if len(under_construction) == 0:
+        return False
+    for construction in under_construction:
+        for r in resource_labels:
+            if construction[0] == r:
+                return True
+    return False
+
+
+def building_under_construction(url: str) -> bool:
+    """
+    Check if a building is in being built. If yes returns True, if not False.
+    :param url: dorf
+    :return: True or False
+    """
+    resource_labels = ('Clay P', 'Woodcu', 'Iron M', 'Cropland')
+    under_construction = current_construction(url)
+
+    if len(under_construction) == 0:
+        return False
+    if len(under_construction) == 2:
+        return True
+    for construction in under_construction:
+        for r in resource_labels:
+            if construction[0] == r:
+                return False
+    return True
+
+
+def plus_acount_active(url: str) -> bool:
+    """
+    Check is Travian plus is activated on the account.
+    :param url: dorf
+    :return: True or False
+    """
+    dorf_parser = BeautifulSoup(url, 'html.parser')
+    link_list = dorf_parser.find('div', {'id': 'sidebarBoxLinklist'})
+    link_list_btn = link_list.find('div', {'class': 'buttonsWrapper'}).find('a')['class']
+    if 'gold' in link_list_btn:
+        return False
+    return True
+
+
+def gold_club_active(url: str) -> bool:
+    """
+    Check is Gold Club is activated on the account.
+    :param url: Rally Point page
+    :return: True or False
+    """
+    rally_point_parser = BeautifulSoup(url, 'html.parser')
+    header = rally_point_parser.find('div', {'class': 'scrollingContainer'})
+    farm_list_btn = header.find('div', {'class': 'favorKey99'}).find('a')['title']
+    if 'For this feature you need the Gold club activated' in farm_list_btn:
+        return False
+    return True

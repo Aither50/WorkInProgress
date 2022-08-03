@@ -4,6 +4,9 @@ from pathlib import Path
 
 BASE_DIR = Path(__file__).parents[1]
 config_path = os.path.join(BASE_DIR, "config.ini")
+build_queue_path = os.path.join(BASE_DIR, "assets/build_queue.json")
+buildings_path = os.path.join(BASE_DIR, "assets/buildings.json")
+fields_path = os.path.join(BASE_DIR, "assets/fields.json")
 
 config = configparser.ConfigParser()
 config.read(config_path)

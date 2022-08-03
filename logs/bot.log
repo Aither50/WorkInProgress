@@ -1,5 +1,5 @@
-27/07/2022 05:55:05 PM: Start Login to server https://ts8.x1.europe.travian.com/dorf1.php
-27/07/2022 05:55:05 PM: Sending POST login request on https://ts8.x1.europe.travian.com/api/v1/auth/login
-27/07/2022 05:55:06 PM: Sending GET request on https://ts8.x1.europe.travian.com/dorf1.php
-27/07/2022 05:55:07 PM: Login success
-27/07/2022 05:55:07 PM: Send GET request to url: https://ts8.x1.europe.travian.com/dorf1.php
+29/07/2022 06:23:43 PM: Start Login to server https://ts8.x1.europe.travian.com/dorf1.php
+29/07/2022 06:23:43 PM: Sending POST login request on https://ts8.x1.europe.travian.com/api/v1/auth/login
+29/07/2022 06:23:44 PM: Sending GET request on https://ts8.x1.europe.travian.com/dorf1.php
+29/07/2022 06:23:44 PM: Login success
+29/07/2022 06:23:44 PM: Send GET request to url: https://ts8.x1.europe.travian.com/dorf2.php
